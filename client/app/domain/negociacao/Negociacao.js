@@ -21,4 +21,11 @@ class Negociacao {
         return this._valor;
     }
 
+    get volumeTotal() {
+        return this._negociacoes
+            .reduce(function(total, negociacao) {
+                return total + negociacao.volume
+            });
+    }
+
 }
