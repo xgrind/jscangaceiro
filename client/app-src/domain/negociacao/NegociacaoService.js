@@ -1,5 +1,6 @@
 import { HttpService } from '../../util/HttpService.js';
 import { Negociacao } from './Negociacao.js';
+import { ApplicationException } from '../../util/ApplicationException.js';
 
 export class NegociacaoService {
     constructor() {
@@ -16,7 +17,7 @@ export class NegociacaoService {
                             objeto.quantidade, objeto.valor))                                            
                 , 
                 err => {
-                    throw new Error('Não foi possível obter as negociações.');
+                    throw new ApplicationException('Não foi possível obter as negociações.');
                 }
             );        
     }
@@ -31,7 +32,7 @@ export class NegociacaoService {
                             objeto.quantidade, objeto.valor))                                           
                 , 
                 err => {
-                    throw new Error('Não foi possível obter as negociações da semana anterior.');
+                    throw new ApplicationException('Não foi possível obter as negociações da semana anterior.');
                 }
             );        
     }
@@ -46,25 +47,25 @@ export class NegociacaoService {
                             objeto.quantidade, objeto.valor))
                 , 
                 err => {
-                    throw new Error('Não foi possível obter as negociações da semana anterior.');
+                    throw new ApplicationException('Não foi possível obter as negociações da semana anterior.');
                 }
             );  
     }
 
-    obemNegociacoesDoPeriodo() {
-        return Promise.all([
-            this.obtemNegociacoesDaSemana(),
-            this.obtemNegociacoesDaSemanaAnterior(),
-            this.obtemNegociacoesDaSemanaRetrasada(),
-        ])
-        .then(periodo => periodo
-            .reduce((novoArray, item) => novoArray.concat(item), [])                
-            .sort((a, b) => b.data.getTime() - a.data.getTime())
-        )        
-        .catch(err => {
+    async obemNegociacoesDoPeriodo() {
+        try {
+            let periodo = await Promise.all([
+                this.obtemNegociacoesDaSemana(),
+                this.obtemNegociacoesDaSemanaAnterior(),
+                this.obtemNegociacoesDaSemanaRetrasada(),    
+            ]);
+            return periodo
+                .reduce((novoArray, item) => novoArray.concat(item), [])                
+                .sort((a, b) => b.data.getTime() - a.data.getTime());
+        } catch(err) {
             console.log(err);
-            throw new Error('Não foi possível obter as negociações do período.');
-        });
+            throw new ApplicationException('Não foi possível obter as negociações do período.');
+        }       
     }
 
     
