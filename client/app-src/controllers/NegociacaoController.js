@@ -1,6 +1,6 @@
-import { Negociacoes, NegociacaoService, Negociacao } from '../domain/index.ts';
+import { Negociacoes, NegociacaoService, Negociacao } from '../domain/index.js';
 import { NegociacoesView, MensagemView, Mensagem, DateConverter } 
-    from '../ui/index.ts';
+    from '../ui/index.js';
 import { getNegociacaoDao, Bind, getExceptionMessage, debounce, controller, bindEvent } 
     from '../util/index.js';
 
@@ -32,7 +32,7 @@ export class NegociacaoController {
         try {
             const dao = await getNegociacaoDao();
             const negociacoes = await dao.listaTodos();
-            negociacoes.forEach(negociacao => this._negociacoes.adiciona(negocicao));
+            negociacoes.forEach(negociacao => this._negociacoes.adiciona(negociacao));
         } catch(err) {
             this._mensagem.texto = getExceptionMessage(err);
         }
