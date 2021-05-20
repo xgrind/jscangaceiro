@@ -1,21 +1,17 @@
 export class HttpService {
-    get(url) {
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'negociacoes/semana');                    
-    
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {                                          
-                        resolve(JSON.parse(xhr.responseText));
-                    } else {
-                        console.log(xhr.responseText);                                            
-                        reject(xhr.responseText);
-                    }
-                }
-            };
-    
-            xhr.send();
-        });
+    _handleErrors(res) {
+        if (!res.ok) {
+            throw new Error(res.statusText);
+        }
+
+        return res;
+    }
+
+    get(url) {       
+
+        return fetch(url)
+            .then(res => this._handleErrors(resk))
+            .then(res => res.json());
+        ;
     }
 }
